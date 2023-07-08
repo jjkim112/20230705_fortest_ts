@@ -33,8 +33,8 @@ const Home: NextPage<QuestContractProps> = ({
   // const { account } = useContext(AppContext);
 
   const { account, setAccount } = useContext(AppContext);
-  const [ ticketContractList, setTicketContractList ] = useState<string[]>([]);
- 
+  const [ticketContractList, setTicketContractList] = useState<string[]>([]);
+
   // const { account, setAccount } = useContext(AppContext);
 
   const onClickLogIn = async () => {
@@ -58,9 +58,11 @@ const Home: NextPage<QuestContractProps> = ({
 
   const attendance = async () => {
     try {
-      const response = await questContract.methods.attendance(ticketContractList[0]).send({
-        from: account,
-      });
+      const response = await questContract.methods
+        .attendance(ticketContractList[0])
+        .send({
+          from: account,
+        });
       console.log(response);
     } catch (error) {
       console.error(error);
@@ -69,9 +71,11 @@ const Home: NextPage<QuestContractProps> = ({
 
   const attendancePointCheck = async () => {
     try {
-      const response = await questContract.methods.attendancePointCheck(ticketContractList[0]).call({
-        from: account,
-      });
+      const response = await questContract.methods
+        .attendancePointCheck(ticketContractList[0])
+        .call({
+          from: account,
+        });
       console.log(response);
     } catch (error) {
       console.error(error);
@@ -87,6 +91,22 @@ const Home: NextPage<QuestContractProps> = ({
       setTicketContractList(response);
       console.log(ticketContractList);
       console.log(ticketContractList[0]);
+      //티컨만들어진 리스트중에 제일 첫번째꺼로 실험하기위해 유즈스테이트에 이렇게 등록해놧당
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const ticketBuying = async () => {
+    try {
+      const response = await questContract.methods
+        .ticketTransfer(ticketContractList[0], 1)
+        .send({
+          from: account,
+          value: web3.utils.toWei(10, "wei"),
+          //여기 10에 들어간 자리는 아래 내가 수동으로 프라이스 리스트 넣을때 1번토큰을 10wei로 했기때문이다
+        });
+      console.log(response);
     } catch (error) {
       console.error(error);
     }
@@ -113,7 +133,7 @@ const Home: NextPage<QuestContractProps> = ({
           symbol
         )
         .send({
-          from: account
+          from: account,
         });
 
       console.log(response);
@@ -122,9 +142,9 @@ const Home: NextPage<QuestContractProps> = ({
     }
   };
 
-useEffect(()=>{
-  getWholeTicketContractList();
-},[])
+  useEffect(() => {
+    getWholeTicketContractList();
+  }, []);
   return (
     <>
       <div className="bg-green-100 py-4 pr-8 flex justify-end">
@@ -143,8 +163,8 @@ useEffect(()=>{
           onClick={makeTicketContractWithMint}
         >
           티컨만들기
-         </button>
-         <button
+        </button>
+        <button
           className="border-4 border-black py-2 px-1 bg-green-300 mx-4"
           onClick={getWholeTicketContractList}
         >
@@ -162,17 +182,14 @@ useEffect(()=>{
         >
           출석체크하기
         </button>
-        </div>
-        {/* 
-        
-        
+
         <button
           className="border-4 border-black py-2 px-1 bg-purple-300 mx-4"
-          onClick={}
+          onClick={ticketBuying}
         >
           티켓구매하기
         </button>
-      </div> */} */}
+      </div>
     </>
   );
 };
