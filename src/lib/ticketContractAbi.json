@@ -3,6 +3,11 @@
     "inputs": [
       {
         "internalType": "string",
+        "name": "_uri1",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
         "name": "_name",
         "type": "string"
       },
@@ -12,14 +17,9 @@
         "type": "string"
       },
       {
-        "internalType": "string",
-        "name": "_metadataUri",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_maxAmount",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "_owner",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -140,25 +140,6 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_nftOwner",
-        "type": "address"
-      }
-    ],
-    "name": "getAllNft",
-    "outputs": [
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "tokenId",
         "type": "uint256"
@@ -170,25 +151,6 @@
         "internalType": "address",
         "name": "",
         "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_nftOwner",
-        "type": "address"
-      }
-    ],
-    "name": "getLatestNft",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -219,7 +181,13 @@
     "type": "function"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_tokenId",
+        "type": "uint256"
+      }
+    ],
     "name": "mintNft",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -362,6 +330,19 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "_tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ticketUsed",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "index",
         "type": "uint256"
       }
@@ -405,7 +386,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_tokenId",
+        "name": "_ID",
         "type": "uint256"
       }
     ],
@@ -454,6 +435,19 @@
     "name": "transferFrom",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "uri1",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]
