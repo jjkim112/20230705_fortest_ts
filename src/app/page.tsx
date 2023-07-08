@@ -79,7 +79,7 @@ const Home: NextPage<QuestContractProps> = ({
         .call({
           from: account,
         });
-      console.log(response);
+      console.log(Number(response));
     } catch (error) {
       console.error(error);
     }
@@ -122,7 +122,7 @@ const Home: NextPage<QuestContractProps> = ({
         .ticketTransfer(ticketContractList[0], 1)
         .send({
           from: account,
-          value: web3.utils.toWei(20, "wei"),
+          value: web3.utils.toWei(10, "wei"),
           //여기 10에 들어간 자리는 아래 내가 수동으로 프라이스 리스트 넣을때 1번토큰을 10wei로 했기때문이다
         });
       console.log(response);
@@ -145,6 +145,16 @@ const Home: NextPage<QuestContractProps> = ({
       console.error(error);
     }
   };
+  const getWholeTicketList = async () => {
+    try {
+      //여기 10에 들어간 자리는 아래 내가 수동으로 프라이스 리스트 넣을때 1번토큰을 10wei로 했기때문이다 그거 트랜스퍼
+      //시키면서 퀘컨에 10wei를 넣어놨기때문에 10wei만큼만빼려고 10을 넣었다.
+      const response = await ticketContract.methods.getAllTokenIds().call();
+      console.log(Number(response));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const processTicketUsed = async () => {
     try {
@@ -160,8 +170,8 @@ const Home: NextPage<QuestContractProps> = ({
   };
 
   tokenId = [1, 2, 3];
-  price = [10, 20, 30];
-  minCount = [1, 2, 3];
+  price = [10, 10, 10];
+  minCount = [1, 1, 2];
   ticketNum = 3;
   uri =
     "https://gold-alleged-yak-272.mypinata.cloud/ipfs/QmU1kyYpFKqawrrHX6J94DfJEBMPT3uanVDW71BP7XGdYY";
@@ -186,6 +196,46 @@ const Home: NextPage<QuestContractProps> = ({
 
       console.log(response);
       console.log(typeof response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const transactionTracking = async () => {
+    const targetTokenId = 1;
+    let tokenNotTransferred = true;
+
+    const options = {
+      filter: {
+        from: "0x3d3DDcc24715AFD91002935a02c6A0fa4fc0F708",
+      },
+      fromBlock: 0,
+      toBlock: "latest",
+    };
+
+    try {
+      const events = await ticketContract.getPastEvents("Transfer", options);
+
+      for (const event of events) {
+        const { from, to, tokenId } = event.returnValues;
+
+        if (tokenId == targetTokenId) {
+          console.log("Transfer 이벤트 발생했네? 감히!!! : ", {
+            from,
+            to,
+            tokenId,
+          });
+
+          tokenNotTransferred = false;
+          break;
+        }
+      }
+
+      if (tokenNotTransferred) {
+        console.log(
+          `요 사람은 토큰 ID ${targetTokenId}을 잘소유하고 있어 음음 아주좋아 넌 자격돼!.`
+        );
+      }
     } catch (error) {
       console.error(error);
     }
@@ -256,6 +306,18 @@ const Home: NextPage<QuestContractProps> = ({
           onClick={getMyLastTimeOfAttendance}
         >
           마지막출석시간
+        </button>
+        <button
+          className="border-4 border-black py-2 px-1 bg-blue-600 mx-4"
+          onClick={transactionTracking}
+        >
+          거래추적
+        </button>
+        <button
+          className="border-4 border-black py-2 px-1 bg-yellow-300 mx-4"
+          onClick={getWholeTicketList}
+        >
+          티켓명단내놔
         </button>
       </div>
     </>
