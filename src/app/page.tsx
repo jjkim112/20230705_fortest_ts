@@ -34,6 +34,7 @@ const Home: NextPage<QuestContractProps> = ({
 
   const { account, setAccount } = useContext(AppContext);
   const [ticketContractList, setTicketContractList] = useState<string[]>([]);
+  const [WhiciTicketContract, setWhiciTicketContract] = useState<string>("");
 
   // const { account, setAccount } = useContext(AppContext);
 
@@ -59,7 +60,7 @@ const Home: NextPage<QuestContractProps> = ({
   const attendance = async () => {
     try {
       const response = await questContract.methods
-        .attendance(ticketContractList[0])
+        .attendance(ticketContractList[1])
         .send({
           from: account,
         });
@@ -72,7 +73,7 @@ const Home: NextPage<QuestContractProps> = ({
   const attendancePointCheck = async () => {
     try {
       const response = await questContract.methods
-        .attendancePointCheck(ticketContractList[0])
+        .attendancePointCheck(ticketContractList[1])
         .call({
           from: account,
         });
@@ -90,7 +91,7 @@ const Home: NextPage<QuestContractProps> = ({
       console.log(response);
       setTicketContractList(response);
       console.log(ticketContractList);
-      console.log(ticketContractList[0]);
+      console.log(ticketContractList[1]);
       //티컨만들어진 리스트중에 제일 첫번째꺼로 실험하기위해 유즈스테이트에 이렇게 등록해놧당
     } catch (error) {
       console.error(error);
@@ -100,11 +101,41 @@ const Home: NextPage<QuestContractProps> = ({
   const ticketBuying = async () => {
     try {
       const response = await questContract.methods
-        .ticketTransfer(ticketContractList[0], 1)
+        .ticketTransfer(ticketContractList[1], 1)
         .send({
           from: account,
           value: web3.utils.toWei(10, "wei"),
           //여기 10에 들어간 자리는 아래 내가 수동으로 프라이스 리스트 넣을때 1번토큰을 10wei로 했기때문이다
+        });
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // withdrawMoney: Number = web3.utils.toWei(10, "wei");
+
+  const withdraw = async () => {
+    try {
+      //여기 10에 들어간 자리는 아래 내가 수동으로 프라이스 리스트 넣을때 1번토큰을 10wei로 했기때문이다 그거 트랜스퍼
+      //시키면서 퀘컨에 10wei를 넣어놨기때문에 10wei만큼만빼려고 10을 넣었다.
+      const response = await questContract.methods
+        .withdraw(ticketContractList[1], 1)
+        .send({
+          from: account,
+        });
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const processTicketUsed = async () => {
+    try {
+      const response = await questContract.methods
+        .setTicketUsed(ticketContractList[1], 1)
+        .send({
+          from: account,
         });
       console.log(response);
     } catch (error) {
@@ -188,6 +219,19 @@ const Home: NextPage<QuestContractProps> = ({
           onClick={ticketBuying}
         >
           티켓구매하기
+        </button>
+
+        <button
+          className="border-4 border-black py-2 px-1 bg-orange-300 mx-4"
+          onClick={withdraw}
+        >
+          출금하기
+        </button>
+        <button
+          className="border-4 border-black py-2 px-1 bg-green-500 mx-4"
+          onClick={ticketBuying}
+        >
+          티켓사용처리하기
         </button>
       </div>
     </>
