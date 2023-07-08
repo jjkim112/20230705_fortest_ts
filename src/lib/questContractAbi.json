@@ -112,8 +112,38 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "owner",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_projectContract",
+        "type": "address"
+      }
+    ],
+    "name": "ownQCNfts",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "participationProjects",
     "outputs": [
       {
         "internalType": "address",
@@ -122,6 +152,29 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_projectContract",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_ticketNum",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_concertPeriod",
+        "type": "uint256"
+      }
+    ],
+    "name": "removeConcertData",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -235,11 +288,6 @@
       },
       {
         "internalType": "bool",
-        "name": "qualified",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
         "name": "checked",
         "type": "bool"
       }
@@ -257,7 +305,7 @@
     ],
     "name": "withdraw",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   }
 ]

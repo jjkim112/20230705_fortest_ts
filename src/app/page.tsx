@@ -9,6 +9,8 @@ import {
   ethereum,
   questContract,
   web3,
+  TICKET_NFT_ADDRESS,
+  ticketContract,
 } from "@/lib/web3.config";
 
 interface QuestContractProps {
@@ -60,7 +62,7 @@ const Home: NextPage<QuestContractProps> = ({
   const attendance = async () => {
     try {
       const response = await questContract.methods
-        .attendance(ticketContractList[1])
+        .attendance(ticketContractList[0])
         .send({
           from: account,
         });
@@ -73,7 +75,7 @@ const Home: NextPage<QuestContractProps> = ({
   const attendancePointCheck = async () => {
     try {
       const response = await questContract.methods
-        .attendancePointCheck(ticketContractList[1])
+        .attendancePointCheck(ticketContractList[0])
         .call({
           from: account,
         });
@@ -88,10 +90,26 @@ const Home: NextPage<QuestContractProps> = ({
       const response = await questContract.methods
         .getWholeTicketContractsList()
         .call();
-      console.log(response);
       setTicketContractList(response);
-      console.log(ticketContractList);
-      console.log(ticketContractList[1]);
+      console.log(response);
+      // console.log(ticketContractList);
+      // console.log(ticketContractList[0]);
+      //티컨만들어진 리스트중에 제일 첫번째꺼로 실험하기위해 유즈스테이트에 이렇게 등록해놧당
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const getMyLastTimeOfAttendance = async () => {
+    try {
+      const response = await questContract.methods
+        .lastCheckedTime(ticketContractList[0])
+        .call({
+          from: account,
+        });
+
+      console.log(response);
+      // console.log(ticketContractList);
+      // console.log(ticketContractList[0]);
       //티컨만들어진 리스트중에 제일 첫번째꺼로 실험하기위해 유즈스테이트에 이렇게 등록해놧당
     } catch (error) {
       console.error(error);
@@ -101,10 +119,10 @@ const Home: NextPage<QuestContractProps> = ({
   const ticketBuying = async () => {
     try {
       const response = await questContract.methods
-        .ticketTransfer(ticketContractList[1], 1)
+        .ticketTransfer(ticketContractList[0], 1)
         .send({
           from: account,
-          value: web3.utils.toWei(10, "wei"),
+          value: web3.utils.toWei(20, "wei"),
           //여기 10에 들어간 자리는 아래 내가 수동으로 프라이스 리스트 넣을때 1번토큰을 10wei로 했기때문이다
         });
       console.log(response);
@@ -119,11 +137,9 @@ const Home: NextPage<QuestContractProps> = ({
     try {
       //여기 10에 들어간 자리는 아래 내가 수동으로 프라이스 리스트 넣을때 1번토큰을 10wei로 했기때문이다 그거 트랜스퍼
       //시키면서 퀘컨에 10wei를 넣어놨기때문에 10wei만큼만빼려고 10을 넣었다.
-      const response = await questContract.methods
-        .withdraw(ticketContractList[1], 1)
-        .send({
-          from: account,
-        });
+      const response = await questContract.methods.withdraw(10).send({
+        from: account,
+      });
       console.log(response);
     } catch (error) {
       console.error(error);
@@ -133,7 +149,7 @@ const Home: NextPage<QuestContractProps> = ({
   const processTicketUsed = async () => {
     try {
       const response = await questContract.methods
-        .setTicketUsed(ticketContractList[1], 1)
+        .setTicketUsed(ticketContractList[0], 1)
         .send({
           from: account,
         });
@@ -143,11 +159,12 @@ const Home: NextPage<QuestContractProps> = ({
     }
   };
 
-  tokenId = [1, 2];
-  price = [10, 20];
-  minCount = [1, 2];
-  ticketNum = 2;
-  uri = "";
+  tokenId = [1, 2, 3];
+  price = [10, 20, 30];
+  minCount = [1, 2, 3];
+  ticketNum = 3;
+  uri =
+    "https://gold-alleged-yak-272.mypinata.cloud/ipfs/QmU1kyYpFKqawrrHX6J94DfJEBMPT3uanVDW71BP7XGdYY";
   name = "ohno";
   symbol = "ON";
 
@@ -168,6 +185,7 @@ const Home: NextPage<QuestContractProps> = ({
         });
 
       console.log(response);
+      console.log(typeof response);
     } catch (error) {
       console.error(error);
     }
@@ -229,9 +247,15 @@ const Home: NextPage<QuestContractProps> = ({
         </button>
         <button
           className="border-4 border-black py-2 px-1 bg-green-500 mx-4"
-          onClick={ticketBuying}
+          onClick={processTicketUsed}
         >
           티켓사용처리하기
+        </button>
+        <button
+          className="border-4 border-black py-2 px-1 bg-red-500 mx-4"
+          onClick={getMyLastTimeOfAttendance}
+        >
+          마지막출석시간
         </button>
       </div>
     </>
