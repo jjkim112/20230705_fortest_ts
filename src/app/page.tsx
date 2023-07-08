@@ -119,7 +119,7 @@ const Home: NextPage<QuestContractProps> = ({
   const ticketBuying = async () => {
     try {
       const response = await questContract.methods
-        .ticketTransfer(ticketContractList[0], 1)
+        .ticketTransfer(ticketContractList[0], 2)
         .send({
           from: account,
           value: web3.utils.toWei(10, "wei"),
@@ -150,7 +150,7 @@ const Home: NextPage<QuestContractProps> = ({
       //여기 10에 들어간 자리는 아래 내가 수동으로 프라이스 리스트 넣을때 1번토큰을 10wei로 했기때문이다 그거 트랜스퍼
       //시키면서 퀘컨에 10wei를 넣어놨기때문에 10wei만큼만빼려고 10을 넣었다.
       const response = await ticketContract.methods.getAllTokenIds().call();
-      console.log(Number(response));
+      console.log(response);
     } catch (error) {
       console.error(error);
     }
@@ -201,13 +201,55 @@ const Home: NextPage<QuestContractProps> = ({
     }
   };
 
+  // const transactionTracking = async () => {
+  //   const targetTokenId = 1;
+  //   let tokenNotTransferred = true;
+
+  //   const options = {
+  //     filter: {
+  //       tokenId:targetTokenId,
+  //     },
+  //     fromBlock: 0,
+  //     toBlock: "latest",
+  //   };
+
+  //   try {
+  //     const events = await ticketContract.getPastEvents("Transfer", options);
+
+  //     for (const event of events) {
+  //       const { from, to, tokenId } = event.returnValues;
+
+  //       if (tokenId == targetTokenId) {
+  //         console.log("Transfer 이벤트 발생했네? 감히!!! : ", {
+  //           from,
+  //           to,
+  //           tokenId,
+  //         });
+
+  //         tokenNotTransferred = false;
+  //         break;
+  //       }
+  //     }
+
+  //     if (tokenNotTransferred) {
+  //       console.log(
+  //         `요 사람은 토큰 ID ${targetTokenId}을 잘소유하고 있어 음음 아주좋아 넌 자격돼!.`
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
   const transactionTracking = async () => {
-    const targetTokenId = 1;
-    let tokenNotTransferred = true;
+    const targetTokenId = 2;
+    const targetReceiverAddress = "0x3d3DDcc24715AFD91002935a02c6A0fa4fc0F708"; // 구매한사람의 주소넣음되어요
+    let transferCount = 0;
+    let lastReceiver = null;
 
     const options = {
       filter: {
-        from: "0x3d3DDcc24715AFD91002935a02c6A0fa4fc0F708",
+        tokenId: targetTokenId,
       },
       fromBlock: 0,
       toBlock: "latest",
@@ -216,24 +258,30 @@ const Home: NextPage<QuestContractProps> = ({
     try {
       const events = await ticketContract.getPastEvents("Transfer", options);
 
+      // 이전 전송 이벤트를 차례대로 검토
       for (const event of events) {
         const { from, to, tokenId } = event.returnValues;
 
         if (tokenId == targetTokenId) {
-          console.log("Transfer 이벤트 발생했네? 감히!!! : ", {
+          transferCount++;
+          lastReceiver = to;
+          console.log("Transfer 이벤트는 이런것들이 잇엇슴돠: ", {
             from,
             to,
             tokenId,
           });
-
-          tokenNotTransferred = false;
-          break;
         }
       }
 
-      if (tokenNotTransferred) {
+      if (transferCount >= 3) {
         console.log(
-          `요 사람은 토큰 ID ${targetTokenId}을 잘소유하고 있어 음음 아주좋아 넌 자격돼!.`
+          `토큰 ID ${targetTokenId}의 거래가 3회 이상 발생했네 죽고싶구나 너.`
+        );
+      } else if (lastReceiver === targetReceiverAddress) {
+        console.log(`우리 퀘컨이 준 사람이 너 맞네`);
+      } else {
+        console.log(
+          `너뭐야 우리퀘컨이 준게 아니잖어 뭔짓을한거야 이베드가이즈.`
         );
       }
     } catch (error) {

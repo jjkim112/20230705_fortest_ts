@@ -8,8 +8,8 @@ export const ethereum = MMSDK.getProvider();
 
 export const web3 = new Web3(ethereum);
 
-export const TICKET_NFT_ADDRESS = "0x19A832e8A1e9D9145da44913899c22f93d098966";
-export const QUEST_NFT_ADDRESS = "0xf9c5c794f2060a8355647B014041bE596133aff0";
+export const TICKET_NFT_ADDRESS = "0xF27273578ba73a40B448FB355E0c859175477456";
+export const QUEST_NFT_ADDRESS = "0x743D09E97C6487565775C557eD6F159fC945d337";
 
 export const questContract = new web3.eth.Contract(
   QUEST_NFT_ABI,
